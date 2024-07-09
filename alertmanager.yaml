@@ -1,0 +1,29 @@
+global:
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'gautamsanghrakshit@example.com'
+  smtp_auth_username: 'gautamsanghrakshit@example.com'
+  smtp_auth_password: 'wvkb kazd ggyx zwjs'
+
+route:
+  receiver: 'email-alert'
+
+  group_by: ['alertname']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 1h
+
+  routes:
+    - match:
+        alertname: "DeploymentChange"
+      receiver: 'email-alert'
+      continue: true
+
+    - match:
+        alertname: "ServiceUnhealthy"
+      receiver: 'email-alert'
+      continue: true
+
+receivers:
+  - name: 'email-alert'
+    email_configs:
+      - to: 'gautamsanghrakshit@gmail.com'
