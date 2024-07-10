@@ -1,0 +1,33 @@
+global:
+  resolve_timeout: 1m
+  slack_api_url: 'https://hooks.slack.com/services/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'
+
+receivers:
+  - name: 'slack-notifications'
+    slack_configs:
+      - channel: '#prometheuntest'
+        send_resolved: true
+
+  - name: 'gmail-notifications'
+    email_configs:
+      - to: gautamsanghrakshit@gmail.com,sdaman@gmail.com 
+        from: gautamsanghrakshit@gmail.com
+        smarthost: smtp.gmail.com:587
+        auth_username: gautamsanghrakshit@gmail.com
+        auth_identity: gautamsanghrakshit@gmail.com
+        auth_password: frbnwqdviayrfzjo 
+        send_resolved: true
+        headers:
+          subject: " Prometheus -  Alert  "
+        text: "{{ range .Alerts }} Hi, \n{{ .Annotations.summary }}  \n {{ .Annotations.description }} {{end}} "
+
+route:
+  group_wait: 10s
+  group_interval: 2m
+  receiver: 'slack-notifications'
+  repeat_interval: 3h
+  routes:
+    - receiver: 'gmail-notifications'
+      group_wait: 10s
+      group_interval: 2m
+      repeat_interval: 2m
